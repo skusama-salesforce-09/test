@@ -1,0 +1,110 @@
+<!-- UNMANAGED -->
+
+<apex:component access="global" controller="ffps_prt.RemittanceEmailController" >
+
+<!-- pass this, or the Summary Id. Use this for Printing, and SummaryId for Email ONLY if custom query is required, otherwise this is fine
+<apex:attribute access="global" name="summary" type="c2g__codaPaymentMediaSummary__c" required="false" description="The Payment Media Summary Record"/>
+-->
+
+<!-- this is only really necessary if a custom query is required, usually you can just pass in the summary variable from email template -->
+<apex:attribute access="global" name="summaryId" type="Id" required="false" description="The Payment Media Summary Record Id, used for Emails" assignTo="{!SelectedSummaryIdAttr}"/>
+
+<apex:attribute access="global" name="pageBreakVar" type="String" required="false" description="Page breaks"/>
+
+<apex:variable var="styleLineColor" value="#3B5E91" />
+
+<div class="main {!pageBreakVar} counterReset">
+
+<div class="header">
+<table style="width:100%">
+<tr>
+<td style="width:70%">
+<apex:outputPanel rendered="{!summary.c2g__OwnerCompany__r.c2g__LogoURL__c != ''}">
+<img src="{!summary.c2g__OwnerCompany__r.c2g__LogoURL__c}" style="width:250px; height=auto;"/>
+</apex:outputPanel>
+</td>
+<td style="font-size:24pt; color: {!styleLineColor} ;font-weight: bold;">Payment</td>
+</tr>
+<tr>
+<td><b>{!summary.c2g__OwnerCompany__r.Name}</b></td>
+<td><b>Payment Reference:</b> {!summary.c2g__PaymentReference__c}</td>
+</tr>
+<tr>
+<td>{!summary.c2g__OwnerCompany__r.c2g__Street__c}</td>
+<td>
+<b>Payment Date:</b> <apex:outputText value="{0,date,MM/dd/yyyy}"><apex:param value="{!summary.c2g__PaymentMediaControl__r.c2g__PaymentDate__c}"/></apex:outputText>
+</td>
+</tr>
+<tr>
+<td>{!summary.c2g__OwnerCompany__r.c2g__City__c} {!summary.c2g__OwnerCompany__r.c2g__StateProvince__c} {!summary.c2g__OwnerCompany__r.c2g__ZipPostCode__c}</td>
+<td>
+<b>Payment Method:</b> <apex:outputText >{!summary.c2g__PaymentMediaControl__r.c2g__PaymentMethod__c}</apex:outputText>
+</td>
+</tr>
+<tr>
+<td>{!summary.c2g__OwnerCompany__r.c2g__Country__c}</td>
+</tr>
+</table>
+
+<br/>
+<table cellpadding="0" cellspacing="0" style="width: 100%; padding: 0px; margin: 0px;">
+<tr>
+<td style="vertical-align:top">
+<table style="width: 100%;">
+<tr>
+<td width="33%"><b>TO:</b></td>
+</tr>
+<tr>
+<td>{!summary.c2g__Account__r.Name}</td>
+</tr>
+<tr>
+<td>{!summary.c2g__BillingStreet__c}</td>
+</tr>
+<tr>
+<td>{!summary.c2g__BillingCity__c}</td>
+</tr>
+<tr>
+<td>{!summary.c2g__BillingStateProvince__c} {!summary.c2g__BillingZipPostCode__c}</td>
+</tr>
+<tr>
+<td>{!summary.c2g__BillingCountry__c}</td>
+</tr>
+</table>
+</td>
+<td style="vertical-align:top">
+<table cellspacing="0" cellpadding="0">
+<tr>
+<td>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</div>
+
+<br/>
+<br/>
+<div class="detail">
+<table style="width: 100%" class="detail-table" cellpadding="0" cellspacing="0">
+<tr>
+<th>Date</th>
+<th>Reference</th>
+<th>Description</th>
+<th>Payment Value</th>
+</tr>
+<apex:repeat var="detail" value="{!summary.c2g__PaymentMediaDetails__r}">
+<tr>
+<td>{!detail.c2g__DocumentDate__c}</td>
+<td>{!detail.c2g__VendorReference__c}</td>
+<td>{!detail.c2g__DocumentDescription__c}</td>
+<td>{!detail.c2g__PaymentValue__c}</td>
+</tr>
+</apex:repeat>
+</table>
+</div>
+
+</div>
+
+
+</apex:component>
